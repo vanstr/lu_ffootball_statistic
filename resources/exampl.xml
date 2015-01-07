@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Spele Laiks="datums_formā_yyyy/mm/dd" Vieta="norises_vieta"
+
+Skatitaji="skatītāju_skaits">
+
+<VT Vards="vecākā_tiesneša_vārds" Uzvards="vecākā_tiesneša_uzvārds" />
+
+<T Vards="līnijtiesneša_vārds" Uzvards="līnijtiesneša_uzvārds" />
+
+<T Vards="līnijtiesneša_vārds" Uzvards="līnijtiesneša_uzvārds" />
+
+<Komanda Nosaukums="pirmās_komandas_nosaukums">
+
+<Speletaji>
+
+<Speletajs Nr="spēlētāja_numurs" Vards="spēlētāja_vārds"
+
+Uzvards="spēlētāja_uzvārds" Loma="spēlētāja_loma"/>
+
+
+</Speletaji>
+
+<Pamatsastavs>
+
+<Speletajs Nr="spēlētāja_numurs"/>
+
+
+</Pamatsastavs>
+
+<Varti>
+
+<VG Laiks="laiks_formā_mm:ss" Nr="vārtu_guvēja_numurs" Sitiens="11m_sitiens">
+
+<P Nr="rezultatīvi_piespēlējušā_spēlētāja_numurs"/>
+
+<P Nr="rezultatīvi_piespēlējušā_spēlētāja_numurs"/>
+
+</VG>
+
+
+</Varti>
+
+<Sodi>
+
+<Sods Laiks="laiks_formā_mm:ss" Nr="sodītā_spēlētāja_numurs"/>
+
+</Sodi>
+
+<Mainas>
+
+<Maina Laiks="laiks_formā_mm:ss" Nr1="nomaināmā_spēlētāja_numurs"
+
+Nr2="spēlētāja_numurs_kurs_uzsāk_spēli"/>
+
+
+</Mainas>
+
+</Komanda>
+
+<Komanda Nosaukums="otrās_komandas_nosaukums">
+
+
+</Komanda>
+
+</Spele>

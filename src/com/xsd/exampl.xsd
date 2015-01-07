@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Spele" type="SpeleType"/>
+  <xs:complexType name="VartiType">
+    <xs:sequence>
+      <xs:element type="VGType" name="VG"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Nr"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="TType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Vards" />
+        <xs:attribute type="xs:string" name="Uzvards"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="MainaType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Laiks"/>
+        <xs:attribute type="xs:string" name="Nr1"/>
+        <xs:attribute type="xs:string" name="Nr2"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="PamatsastavsType">
+    <xs:sequence>
+      <xs:element type="SpeletajsType" name="Speletajs" maxOccurs="11" minOccurs="11"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VTType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Vards"/>
+        <xs:attribute type="xs:string" name="Uzvards"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SpeleType">
+    <xs:sequence>
+      <xs:element type="VTType" name="VT"/>
+      <xs:element type="TType" name="T" maxOccurs="2" minOccurs="2"/>
+      <xs:element type="KomandaType" name="Komanda" maxOccurs="2" minOccurs="2"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="Laiks"/>
+    <xs:attribute type="xs:string" name="Vieta"/>
+    <xs:attribute type="xs:string" name="Skatitaji"/>
+  </xs:complexType>
+  <xs:complexType name="SodiType">
+    <xs:sequence>
+      <xs:element type="SodsType" name="Sods"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SodsType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Laiks"/>
+        <xs:attribute type="xs:string" name="Nr"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="KomandaType">
+    <xs:sequence>
+      <xs:element type="SpeletajiType" name="Speletaji"/>
+      <xs:element type="PamatsastavsType" name="Pamatsastavs"/>
+      <xs:element type="VartiType" name="Varti" />
+      <xs:element type="SodiType" name="Sodi" />
+      <xs:element type="MainasType" name="Mainas"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="Nosaukums"/>
+  </xs:complexType>
+  <xs:complexType name="MainasType">
+    <xs:sequence>
+      <xs:element type="MainaType" name="Maina"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SpeletajiType">
+    <xs:sequence>
+      <xs:element type="SpeletajsType" name="Speletajs" maxOccurs="unbounded" minOccurs="16" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VGType">
+    <xs:sequence>
+      <xs:element type="PType" name="P" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="Laiks"/>
+    <xs:attribute type="xs:string" name="Nr"/>
+    <xs:attribute type="xs:string" name="Sitiens"/>
+  </xs:complexType>
+  <xs:complexType name="SpeletajsType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Nr" />
+        <xs:attribute type="xs:string" name="Vards" />
+        <xs:attribute type="xs:string" name="Uzvards" />
+        <xs:attribute type="xs:string" name="Loma" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>
