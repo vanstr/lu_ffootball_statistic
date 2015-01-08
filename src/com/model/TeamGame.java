@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class PlayingTeam {
+public class TeamGame {
 
   @Id
   private int id;
@@ -12,18 +12,22 @@ public class PlayingTeam {
   private Team team;
   @OneToOne
   private Game game;
+
+  @OneToMany
+  private List<Goal> goals;
+
   private int points;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "MAIN_PLAYERS_IN_TEAM_GAME",
       joinColumns = @JoinColumn(name = "player_id"),
-      inverseJoinColumns = @JoinColumn(name = "playing_team_id"))
+      inverseJoinColumns = @JoinColumn(name = "team_game_id"))
   private List<Player> mainPlayers;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "ENROLLED_PLAYERS_IN_TEAM_GAME",
       joinColumns = @JoinColumn(name = "player_id"),
-      inverseJoinColumns = @JoinColumn(name = "playing_team_id"))
+      inverseJoinColumns = @JoinColumn(name = "team_game_id"))
   private List<Player> enrolledPlayers;
 
   public int getId() {
@@ -72,5 +76,13 @@ public class PlayingTeam {
 
   public void setEnrolledPlayers(List<Player> enrolledPlayers) {
     this.enrolledPlayers = enrolledPlayers;
+  }
+
+  public List<Goal> getGoals() {
+    return goals;
+  }
+
+  public void setGoals(List<Goal> goals) {
+    this.goals = goals;
   }
 }

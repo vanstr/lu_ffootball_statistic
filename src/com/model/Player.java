@@ -1,25 +1,41 @@
 package com.model;
 
+import com.avaje.ebean.Ebean;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "PLAYER",
+    uniqueConstraints = @UniqueConstraint(columnNames = "TEAM_ID, NUMBER")
+)
 public class Player {
   @Id
   private int id;
 
   @ManyToOne
   private Team team;
-  private String name;
-  @Column(unique = true)
   private int number;
+  private String name;
   private String lastName;
+  private String role;
 
   @ManyToMany(mappedBy = "enrolledPlayers", cascade = CascadeType.ALL)
-  private List<PlayingTeam> enrolledPlayersInGame;
+  private List<TeamGame> teamGamesAsEnrolledPlayer;
 
   @ManyToMany(mappedBy = "mainPlayers",  cascade = CascadeType.ALL)
-  private List<PlayingTeam> mainPlayersInGame;
+  private List<TeamGame> teamGamesAsMainPlayer;
+
+  public Player(){
+
+  }
+  public Player( Team team, int nr, String vards, String uzvards, String loma) {
+    setTeam(team);
+    setNumber(nr);
+    setLastName(uzvards);
+    setName(vards);
+    setRole(loma);
+  }
 
   public int getId() {
     return id;
@@ -61,19 +77,31 @@ public class Player {
     this.lastName = lastName;
   }
 
-  public List<PlayingTeam> getEnrolledPlayersInGame() {
-    return enrolledPlayersInGame;
+  public List<TeamGame> getTeamGamesAsEnrolledPlayer() {
+    return teamGamesAsEnrolledPlayer;
   }
 
-  public void setEnrolledPlayersInGame(List<PlayingTeam> enrolledPlayersInGame) {
-    this.enrolledPlayersInGame = enrolledPlayersInGame;
+  public void setTeamGamesAsEnrolledPlayer(List<TeamGame> teamGamesAsEnrolledPlayer) {
+    this.teamGamesAsEnrolledPlayer = teamGamesAsEnrolledPlayer;
   }
 
-  public List<PlayingTeam> getMainPlayersInGame() {
-    return mainPlayersInGame;
+  public List<TeamGame> getTeamGamesAsMainPlayer() {
+    return teamGamesAsMainPlayer;
   }
 
-  public void setMainPlayersInGame(List<PlayingTeam> mainPlayersInGame) {
-    this.mainPlayersInGame = mainPlayersInGame;
+  public void setTeamGamesAsMainPlayer(List<TeamGame> teamGamesAsMainPlayer) {
+    this.teamGamesAsMainPlayer = teamGamesAsMainPlayer;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
+
+  public static Player getByNumber(int nr, Team team) {
+    return Ebean.find(Player.class).where().eq("number", nr).eq("team", team).findUnique();
   }
 }

@@ -1,15 +1,19 @@
 
-package com.xsd;
+package com.schema;
 
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
  * <p>Java class for SpeleType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>The following com.schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="SpeleType">
@@ -30,7 +34,6 @@ import java.util.List;
  * 
  * 
  */
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpeleType", propOrder = {
     "vt",

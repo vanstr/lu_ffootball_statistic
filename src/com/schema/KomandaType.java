@@ -1,5 +1,5 @@
 
-package com.xsd;
+package com.schema;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Java class for KomandaType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>The following com.schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="KomandaType">
@@ -45,7 +45,7 @@ public class KomandaType {
     @XmlElement(name = "Speletaji", required = true)
     protected SpeletajiType speletaji;
     @XmlElement(name = "Pamatsastavs", required = true)
-    protected   PamatsastavsType pamatsastavs;
+    protected PamatsastavsType pamatsastavs;
     @XmlElement(name = "Varti", required = true)
     protected VartiType varti;
     @XmlElement(name = "Sodi", required = true)

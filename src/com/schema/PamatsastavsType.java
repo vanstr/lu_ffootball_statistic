@@ -1,5 +1,5 @@
 
-package com.xsd;
+package com.schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SpeletajiType complex type.
+ * <p>Java class for PamatsastavsType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>The following com.schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SpeletajiType">
+ * &lt;complexType name="PamatsastavsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Speletajs" type="{}SpeletajsType" maxOccurs="unbounded" minOccurs="16"/>
+ *         &lt;element name="Speletajs" type="{}SpeletajsType" maxOccurs="11" minOccurs="11"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,10 +29,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SpeletajiType", propOrder = {
+@XmlType(name = "PamatsastavsType", propOrder = {
     "speletajs"
 })
-public class SpeletajiType {
+public class PamatsastavsType {
 
     @XmlElement(name = "Speletajs", required = true)
     protected List<SpeletajsType> speletajs;

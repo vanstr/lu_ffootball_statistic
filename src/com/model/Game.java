@@ -14,9 +14,9 @@ public class Game{
   private String place;
 
   @OneToOne
-  private PlayingTeam playingTeamOne;
+  private TeamGame teamGameOne;
   @OneToOne
-  private PlayingTeam playingTeamTwo;
+  private TeamGame teamGameTwo;
 
   public int getId() {
     return id;
@@ -42,20 +42,20 @@ public class Game{
     this.place = place;
   }
 
-  public PlayingTeam getPlayingTeamOne() {
-    return playingTeamOne;
+  public TeamGame getTeamGameOne() {
+    return teamGameOne;
   }
 
-  public void setPlayingTeamOne(PlayingTeam playingTeamOne) {
-    this.playingTeamOne = playingTeamOne;
+  public void setTeamGameOne(TeamGame teamGameOne) {
+    this.teamGameOne = teamGameOne;
   }
 
-  public PlayingTeam getPlayingTeamTwo() {
-    return playingTeamTwo;
+  public TeamGame getTeamGameTwo() {
+    return teamGameTwo;
   }
 
-  public void setPlayingTeamTwo(PlayingTeam playingTeamTwo) {
-    this.playingTeamTwo = playingTeamTwo;
+  public void setTeamGameTwo(TeamGame teamGameTwo) {
+    this.teamGameTwo = teamGameTwo;
   }
 
 }

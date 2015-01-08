@@ -3,7 +3,7 @@
   <xs:element name="Spele" type="SpeleType"/>
   <xs:complexType name="VartiType">
     <xs:sequence>
-      <xs:element type="VGType" name="VG"/>
+      <xs:element type="VGType" name="VG" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PType">
@@ -55,7 +55,7 @@
   </xs:complexType>
   <xs:complexType name="SodiType">
     <xs:sequence>
-      <xs:element type="SodsType" name="Sods"/>
+      <xs:element type="SodsType" name="Sods" maxOccurs="unbounded" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="SodsType">
@@ -83,7 +83,7 @@
   </xs:complexType>
   <xs:complexType name="SpeletajiType">
     <xs:sequence>
-      <xs:element type="SpeletajsType" name="Speletajs" maxOccurs="unbounded" minOccurs="16" />
+      <xs:element type="SpeletajsType" name="Speletajs" maxOccurs="unbounded" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="VGType">

@@ -1,5 +1,5 @@
 
-package com.xsd;
+package com.schema;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -10,12 +10,12 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.xsd package.
+ * generated in the com.schema package.
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
+ * content can consist of com.schema derived interfaces
+ * and classes representing the binding of com.schema
  * type definitions, element declarations and model 
  * groups.  Factory methods for each of these are 
  * provided in this class.
@@ -27,7 +27,7 @@ public class ObjectFactory {
     private final static QName _Spele_QNAME = new QName("", "Spele");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.xsd
+     * Create a new ObjectFactory that can be used to create new instances of com.schema derived classes for package: com.schema
      * 
      */
     public ObjectFactory() {

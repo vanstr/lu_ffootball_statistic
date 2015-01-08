@@ -9,7 +9,7 @@ public class Goal {
   private int id;
 
   @ManyToOne
-  private PlayingTeam playingTeam;
+  private TeamGame teamGame;
   @ManyToOne
   private Player goalAuthor;
   @ManyToOne
@@ -20,6 +20,17 @@ public class Goal {
   private long goalTimeInSeconds;
   private String goalType;
 
+  public Goal(){
+
+  }
+
+  public Goal(Player goalAuthor, long goalTimaInSecond, TeamGame tg, String goalType) {
+    setGoalAuthor(goalAuthor);
+    setGoalTimeInSeconds(goalTimaInSecond);
+    setTeamGame(tg);
+    setGoalType(goalType);
+  }
+
   public int getId() {
     return id;
   }
@@ -28,12 +39,12 @@ public class Goal {
     this.id = id;
   }
 
-  public PlayingTeam getPlayingTeam() {
-    return playingTeam;
+  public TeamGame getTeamGame() {
+    return teamGame;
   }
 
-  public void setPlayingTeam(PlayingTeam playingTeam) {
-    this.playingTeam = playingTeam;
+  public void setTeamGame(TeamGame teamGame) {
+    this.teamGame = teamGame;
   }
 
   public Player getGoalAuthor() {
