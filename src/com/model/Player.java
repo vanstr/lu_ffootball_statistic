@@ -20,6 +20,12 @@ public class Player {
   private String lastName;
   private String role;
 
+  @OneToMany
+  private List<Goal> goals;
+
+  @ManyToMany(mappedBy = "passPlayers", cascade = CascadeType.ALL)
+  private List<Goal> gavePass;
+
   @ManyToMany(mappedBy = "enrolledPlayers", cascade = CascadeType.ALL)
   private List<TeamGame> teamGamesAsEnrolledPlayer;
 
@@ -103,5 +109,21 @@ public class Player {
 
   public static Player getByNumber(int nr, Team team) {
     return Ebean.find(Player.class).where().eq("number", nr).eq("team", team).findUnique();
+  }
+
+  public List<Goal> getGoals() {
+    return goals;
+  }
+
+  public void setGoals(List<Goal> goals) {
+    this.goals = goals;
+  }
+
+  public List<Goal> getGavePass() {
+    return gavePass;
+  }
+
+  public void setGavePass(List<Goal> gavePass) {
+    this.gavePass = gavePass;
   }
 }

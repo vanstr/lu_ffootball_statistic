@@ -5,10 +5,17 @@ import com.avaje.ebean.SqlRow;
 import com.model.*;
 import com.schema.*;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,24 +23,100 @@ import java.util.List;
  */
 public class Main {
 
+
   public static void main(String[] args) throws Exception {
 
     testConnection();
 
-    SpeleType object = getParsedObject("resources/data/futbols20.xml");
+    //File footballDataFolder = new File("resources/data");
+    File footballDataFolder = new File("C:\\Users\\imi\\IdeaProjects\\trash\\lu_ffootball_statistic\\resources\\data");
+    List<File> files = getXmlFilesInFolder(footballDataFolder);
+    for (File file : files) {
+      SpeleType speleType = getParsedObject(file.getAbsolutePath());
+      if (isNewGame(speleType)) {
+        System.out.println("Save to db :" + file.getName());
+        saveDataToDb(speleType);
+      }else{
+        System.out.println("Slipped " + file.getName() );
+      }
+    }
+  }
 
-    saveDataToDb(object);
+
+  private static List<File> getXmlFilesInFolder(File folder) {
+    List<File> files = new ArrayList<>();
+    for (final File fileEntry : folder.listFiles()) {
+      if (!fileEntry.isDirectory() && isXmlFile(fileEntry)) {
+        files.add(fileEntry);
+        System.out.println(fileEntry.getName());
+      }
+    }
+    return files;
+  }
+
+  private static boolean isXmlFile(File file) {
+    String fileName = file.getName();
+    String extension = "";
+
+    int i = fileName.lastIndexOf('.');
+    if (i > 0) {
+      extension = fileName.substring(i + 1);
+    }
+    return extension.equalsIgnoreCase("xml");
+  }
+
+  private static boolean isNewGame(SpeleType speleType) {
+    String place = speleType.getVieta();
+    Date date = parseStringToDate(speleType.getLaiks());
+    Game game = Game.getByDateAndPlace(date, place);
+
+    if (game != null) {
+      String teamName1 = game.getTeamGameOne().getTeam().getName();
+      String teamName2 = game.getTeamGameTwo().getTeam().getName();
+
+      String newTeamName1 = speleType.getKomanda().get(0).getNosaukums();
+      String newTeamName2 = speleType.getKomanda().get(1).getNosaukums();
+
+      if( (teamName1.equalsIgnoreCase(newTeamName1) || teamName1.equalsIgnoreCase(newTeamName2) )
+          && (teamName2.equalsIgnoreCase(newTeamName1) || teamName2.equalsIgnoreCase(newTeamName2))
+      ){
+        return false;
+      }
+    }
+    return true;
+
   }
 
   private static void saveDataToDb(SpeleType object) {
     Game game = new Game();
-    game.setPlace(object.getVieta());
-    game.setSpectatorsAmount(Integer.parseInt(object.getSkatitaji()));
+
+    String vieta = object.getVieta();
+    game.setPlace(vieta);
+
+    Date convertedDate = parseStringToDate(object.getLaiks());
+    game.setDate(convertedDate);
+
+    int spectatorsAmount = Integer.parseInt(object.getSkatitaji());
+    game.setSpectatorsAmount(spectatorsAmount);
     Ebean.save(game);
+
     game.setTeamGameOne(generatePlayingTeam(object.getKomanda().get(0), game));
     game.setTeamGameTwo(generatePlayingTeam(object.getKomanda().get(1), game));
     //TODO process referee
     Ebean.update(game);
+  }
+
+  private static Date parseStringToDate(String date) {
+    Date res = null;
+    try {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+      res = sdf.parse(date);
+    }
+    catch (ParseException e1) {
+      e1.printStackTrace();
+    }
+
+    return res;
   }
 
   private static TeamGame generatePlayingTeam(KomandaType komandaType, Game game) {
@@ -78,14 +161,13 @@ public class Main {
       // Process player passes
       List<PType> pTypes = vg.getP();
       if (!pTypes.isEmpty()) {
-        int passPlayerNumber1 = Integer.parseInt(pTypes.get(0).getNr());
-        Player p1 = Player.getByNumber(passPlayerNumber1, tg.getTeam());
-        goal.setPassPlayerFirst(p1);
-        if (pTypes.size() > 1) {
-          int passPlayerNumber2 = Integer.parseInt(pTypes.get(1).getNr());
-          Player p2 = Player.getByNumber(passPlayerNumber2, tg.getTeam());
-          goal.setPassPlayerSecond(p2);
+        List<Player> passPlayers = new ArrayList<>();
+        for (PType pt : pTypes) {
+          int passPlayerNumber1 = Integer.parseInt(pt.getNr());
+          Player passPlayer = Player.getByNumber(passPlayerNumber1, tg.getTeam());
+          passPlayers.add(passPlayer);
         }
+        goal.setPassPlayers(passPlayers);
       }
 
       Ebean.save(goal);

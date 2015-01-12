@@ -1,6 +1,7 @@
 package com.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Goal {
@@ -12,10 +13,11 @@ public class Goal {
   private TeamGame teamGame;
   @ManyToOne
   private Player goalAuthor;
-  @ManyToOne
-  private Player passPlayerFirst;
-  @ManyToOne
-  private Player passPlayerSecond;
+  @ManyToMany
+  @JoinTable(name = "GOAL_PASS_PLAYER",
+      joinColumns = @JoinColumn(name = "player_id"),
+      inverseJoinColumns = @JoinColumn(name = "goal_id"))
+  private List<Player> passPlayers;
 
   private long goalTimeInSeconds;
   private String goalType;
@@ -55,22 +57,6 @@ public class Goal {
     this.goalAuthor = goalAuthor;
   }
 
-  public Player getPassPlayerFirst() {
-    return passPlayerFirst;
-  }
-
-  public void setPassPlayerFirst(Player passPlayerFirst) {
-    this.passPlayerFirst = passPlayerFirst;
-  }
-
-  public Player getPassPlayerSecond() {
-    return passPlayerSecond;
-  }
-
-  public void setPassPlayerSecond(Player passPlayerSecond) {
-    this.passPlayerSecond = passPlayerSecond;
-  }
-
   public long getGoalTimeInSeconds() {
     return goalTimeInSeconds;
   }
@@ -85,5 +71,13 @@ public class Goal {
 
   public void setGoalType(String goalType) {
     this.goalType = goalType;
+  }
+
+  public List<Player> getPassPlayers() {
+    return passPlayers;
+  }
+
+  public void setPassPlayers(List<Player> passPlayers) {
+    this.passPlayers = passPlayers;
   }
 }
