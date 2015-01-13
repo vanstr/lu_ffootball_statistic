@@ -16,6 +16,8 @@ public class TeamGame {
   @OneToMany
   private List<Goal> goals;
 
+  private boolean playedAdditionalTime;
+  private boolean winners;
   private int points;
 
   @ManyToMany(cascade = CascadeType.ALL)
@@ -84,5 +86,41 @@ public class TeamGame {
 
   public void setGoals(List<Goal> goals) {
     this.goals = goals;
+  }
+
+  public boolean isPlayedAdditionalTime() {
+    return playedAdditionalTime;
+  }
+
+  public void setPlayedAdditionalTime(boolean playedAdditionalTime) {
+    this.playedAdditionalTime = playedAdditionalTime;
+  }
+
+  public boolean isWinners() {
+    return winners;
+  }
+
+  public void setWinners(boolean winners) {
+    this.winners = winners;
+  }
+
+  public void calculatePoints() {
+      int points;
+      if (winners) {
+        if (playedAdditionalTime) {
+          points = 3;
+        }
+        else {
+          points = 5;
+        }
+      }else{
+        if (playedAdditionalTime) {
+          points = 1;
+        }
+        else {
+          points = 2;
+        }
+      }
+      this.points = points;
   }
 }

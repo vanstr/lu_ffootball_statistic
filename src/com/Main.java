@@ -24,6 +24,8 @@ import java.util.List;
 public class Main {
 
 
+  public static final int SIXTEE_MINUTES_IN_SECOND = 3600;
+
   public static void main(String[] args) throws Exception {
 
     testConnection();
@@ -36,8 +38,9 @@ public class Main {
       if (isNewGame(speleType)) {
         System.out.println("Save to db :" + file.getName());
         saveDataToDb(speleType);
-      }else{
-        System.out.println("Slipped " + file.getName() );
+      }
+      else {
+        System.out.println("Slipped " + file.getName());
       }
     }
   }
@@ -53,6 +56,7 @@ public class Main {
     }
     return files;
   }
+
 
   private static boolean isXmlFile(File file) {
     String fileName = file.getName();
@@ -77,14 +81,13 @@ public class Main {
       String newTeamName1 = speleType.getKomanda().get(0).getNosaukums();
       String newTeamName2 = speleType.getKomanda().get(1).getNosaukums();
 
-      if( (teamName1.equalsIgnoreCase(newTeamName1) || teamName1.equalsIgnoreCase(newTeamName2) )
+      if ((teamName1.equalsIgnoreCase(newTeamName1) || teamName1.equalsIgnoreCase(newTeamName2))
           && (teamName2.equalsIgnoreCase(newTeamName1) || teamName2.equalsIgnoreCase(newTeamName2))
-      ){
+          ) {
         return false;
       }
     }
     return true;
-
   }
 
   private static void saveDataToDb(SpeleType object) {
@@ -100,10 +103,56 @@ public class Main {
     game.setSpectatorsAmount(spectatorsAmount);
     Ebean.save(game);
 
-    game.setTeamGameOne(generatePlayingTeam(object.getKomanda().get(0), game));
-    game.setTeamGameTwo(generatePlayingTeam(object.getKomanda().get(1), game));
+    TeamGame teamGameOne = generatePlayingTeam(object.getKomanda().get(0), game);
+    game.setTeamGameOne(teamGameOne);
+    TeamGame teamGameTwo = generatePlayingTeam(object.getKomanda().get(1), game);
+    game.setTeamGameTwo(teamGameTwo);
+
+    calcualteTeamsPoints(teamGameOne, teamGameTwo);
+
     //TODO process referee
     Ebean.update(game);
+  }
+
+  private static void calcualteTeamsPoints(TeamGame teamGameOne, TeamGame teamGameTwo) {
+    List<Goal> team1Goals = teamGameOne.getGoals();
+    List<Goal> team2Goals = teamGameTwo.getGoals();
+
+    boolean isAdditionalTime;
+    if ( team2Goals == null || (team1Goals != null && team1Goals.size() > team2Goals.size())) {
+      isAdditionalTime = hasPlayedAdditionalTime(team1Goals);
+      teamGameOne.setWinners(true);
+      teamGameTwo.setWinners(false);
+    }
+    else if ( team1Goals == null || (team1Goals.size() < team2Goals.size())) {
+      isAdditionalTime = hasPlayedAdditionalTime(team2Goals);
+      teamGameOne.setWinners(false);
+      teamGameTwo.setWinners(true);
+    }else{
+      throw new RuntimeException("Incorrect game result");
+    }
+    teamGameOne.setPlayedAdditionalTime(isAdditionalTime);
+    teamGameTwo.setPlayedAdditionalTime(isAdditionalTime);
+    teamGameOne.calculatePoints();
+    teamGameTwo.calculatePoints();
+
+    Ebean.update(teamGameOne);
+    Ebean.update(teamGameTwo);
+  }
+
+
+  private static boolean hasPlayedAdditionalTime(List<Goal> teamGoals) {
+    boolean additionalTime = false;
+    long latestGoalTimeInSeconds = 0;
+    for (Goal goal : teamGoals) {
+      if (goal.getGoalTimeInSeconds() > latestGoalTimeInSeconds) {
+        latestGoalTimeInSeconds = goal.getGoalTimeInSeconds();
+      }
+    }
+    if (latestGoalTimeInSeconds > SIXTEE_MINUTES_IN_SECOND) {
+      additionalTime = true;
+    }
+    return additionalTime;
   }
 
   private static Date parseStringToDate(String date) {
@@ -137,8 +186,6 @@ public class Main {
 
     List<Goal> goals = processGoals(komandaType, tg);
     tg.setGoals(goals);
-    int points = 0;// TODO calculate
-    tg.setPoints(points);
 
     Ebean.update(tg);
 
@@ -155,7 +202,7 @@ public class Main {
     for (VGType vg : vartuGuvumi) {
       int playerNumber = Integer.parseInt(vg.getNr());
       Player goalAuthor = Player.getByNumber(playerNumber, tg.getTeam());
-      long goalTimaInSecond = 0;// TODO vg.getLaiks();
+      long goalTimaInSecond = parseStringToSeconds(vg.getLaiks());
       Goal goal = new Goal(goalAuthor, goalTimaInSecond, tg, vg.getSitiens());
 
       // Process player passes
@@ -175,6 +222,12 @@ public class Main {
       goals.add(goal);
     }
     return goals;
+  }
+  private static long parseStringToSeconds(String time) {
+    //String time = "12:32:22";
+    String[] values = time.split(":");
+    long res = (Integer.parseInt(values[0]) * 60 + Integer.parseInt(values[1]));
+    return res;
   }
 
   private static List<Player> processMainPlayers(KomandaType komandaType) {
@@ -226,11 +279,6 @@ public class Main {
 
     JAXBElement<SpeleType> some = unmarshaller.unmarshal(xml, SpeleType.class);
     SpeleType speleType = some.getValue();
-
-    /*Marshaller marshaller = jx.createMarshaller();
-    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "src/com/xsd/exampl.xsd");
-    marshaller.marshal(some, System.out);*/
 
     return speleType;
   }
