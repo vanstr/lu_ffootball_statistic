@@ -1,4 +1,4 @@
-package com.model;
+package com.lu.model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +10,13 @@ public class Goal {
   private int id;
 
   @ManyToOne
+  private Game game;
+  @ManyToOne
   private TeamGame teamGame;
+  @ManyToOne
+  private Team scoredTeam;
+  @ManyToOne
+  private Team lostTeam;
   @ManyToOne
   private Player goalAuthor;
   @ManyToMany
@@ -26,11 +32,12 @@ public class Goal {
 
   }
 
-  public Goal(Player goalAuthor, long goalTimaInSecond, TeamGame tg, String goalType) {
+  public Goal(Player goalAuthor, long goalTimaInSecond, String goalType, Team scoredTeam, Team lostTeam) {
     setGoalAuthor(goalAuthor);
     setGoalTimeInSeconds(goalTimaInSecond);
-    setTeamGame(tg);
     setGoalType(goalType);
+    setLostTeam(lostTeam);
+    setScoredTeam(scoredTeam);
   }
 
   public int getId() {
@@ -39,14 +46,6 @@ public class Goal {
 
   public void setId(int id) {
     this.id = id;
-  }
-
-  public TeamGame getTeamGame() {
-    return teamGame;
-  }
-
-  public void setTeamGame(TeamGame teamGame) {
-    this.teamGame = teamGame;
   }
 
   public Player getGoalAuthor() {
@@ -79,5 +78,37 @@ public class Goal {
 
   public void setPassPlayers(List<Player> passPlayers) {
     this.passPlayers = passPlayers;
+  }
+
+  public Team getLostTeam() {
+    return lostTeam;
+  }
+
+  public void setLostTeam(Team lostTeam) {
+    this.lostTeam = lostTeam;
+  }
+
+  public Team getScoredTeam() {
+    return scoredTeam;
+  }
+
+  public void setScoredTeam(Team scoredTeam) {
+    this.scoredTeam = scoredTeam;
+  }
+
+  public Game getGame() {
+    return game;
+  }
+
+  public void setGame(Game game) {
+    this.game = game;
+  }
+
+  public TeamGame getTeamGame() {
+    return teamGame;
+  }
+
+  public void setTeamGame(TeamGame teamGame) {
+    this.teamGame = teamGame;
   }
 }

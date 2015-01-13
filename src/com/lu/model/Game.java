@@ -1,9 +1,11 @@
-package com.model;
+package com.lu.model;
 
 
 import com.avaje.ebean.Ebean;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.util.Date;
 
 @Entity
@@ -14,6 +16,7 @@ public class Game{
   private int spectatorsAmount;
   private String place;
   private Date date;
+
 
   @OneToOne
   private TeamGame teamGameOne;
@@ -71,4 +74,5 @@ public class Game{
   public static Game getByDateAndPlace(Date date, String place) {
     return Ebean.find(Game.class).where().eq("date", date).eq("place", place).findUnique();
   }
+
 }

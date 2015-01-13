@@ -1,5 +1,5 @@
 
-package com.schema;
+package com.lu.schema;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,18 +9,16 @@ import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * <p>Java class for SpeletajsType complex type.
+ * <p>Java class for VTType complex type.
  * 
- * <p>The following com.schema fragment specifies the expected content contained within this class.
+ * <p>The following com.lu.schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SpeletajsType">
+ * &lt;complexType name="VTType">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="Nr" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="Vards" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="Uzvards" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="Loma" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -29,21 +27,17 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SpeletajsType", propOrder = {
+@XmlType(name = "VTType", propOrder = {
     "value"
 })
-public class SpeletajsType {
+public class VTType {
 
     @XmlValue
     protected String value;
-    @XmlAttribute(name = "Nr")
-    protected String nr;
     @XmlAttribute(name = "Vards")
     protected String vards;
     @XmlAttribute(name = "Uzvards")
     protected String uzvards;
-    @XmlAttribute(name = "Loma")
-    protected String loma;
 
     /**
      * Gets the value of the value property.
@@ -67,30 +61,6 @@ public class SpeletajsType {
      */
     public void setValue(String value) {
         this.value = value;
-    }
-
-    /**
-     * Gets the value of the nr property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNr() {
-        return nr;
-    }
-
-    /**
-     * Sets the value of the nr property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNr(String value) {
-        this.nr = value;
     }
 
     /**
@@ -139,30 +109,6 @@ public class SpeletajsType {
      */
     public void setUzvards(String value) {
         this.uzvards = value;
-    }
-
-    /**
-     * Gets the value of the loma property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLoma() {
-        return loma;
-    }
-
-    /**
-     * Sets the value of the loma property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLoma(String value) {
-        this.loma = value;
     }
 
 }

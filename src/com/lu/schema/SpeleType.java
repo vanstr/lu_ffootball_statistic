@@ -1,5 +1,5 @@
 
-package com.schema;
+package com.lu.schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Java class for SpeleType complex type.
  * 
- * <p>The following com.schema fragment specifies the expected content contained within this class.
+ * <p>The following com.lu.schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="SpeleType">

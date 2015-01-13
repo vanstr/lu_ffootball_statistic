@@ -1,5 +1,5 @@
 
-package com.schema;
+package com.lu.schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for VartiType complex type.
+ * <p>Java class for SodiType complex type.
  * 
- * <p>The following com.schema fragment specifies the expected content contained within this class.
+ * <p>The following com.lu.schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="VartiType">
+ * &lt;complexType name="SodiType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="VG" type="{}VGType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Sods" type="{}SodsType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,41 +29,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VartiType", propOrder = {
-    "vg"
+@XmlType(name = "SodiType", propOrder = {
+    "sods"
 })
-public class VartiType {
+public class SodiType {
 
-    @XmlElement(name = "VG")
-    protected List<VGType> vg;
+    @XmlElement(name = "Sods")
+    protected List<SodsType> sods;
 
     /**
-     * Gets the value of the vg property.
+     * Gets the value of the sods property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the vg property.
+     * This is why there is not a <CODE>set</CODE> method for the sods property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getVG().add(newItem);
+     *    getSods().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link VGType }
+     * {@link SodsType }
      * 
      * 
      */
-    public List<VGType> getVG() {
-        if (vg == null) {
-            vg = new ArrayList<VGType>();
+    public List<SodsType> getSods() {
+        if (sods == null) {
+            sods = new ArrayList<SodsType>();
         }
-        return this.vg;
+        return this.sods;
     }
 
 }

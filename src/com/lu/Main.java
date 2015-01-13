@@ -1,9 +1,9 @@
-package com;
+package com.lu;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.SqlRow;
-import com.model.*;
-import com.schema.*;
+import com.lu.model.*;
+import com.lu.schema.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -24,8 +24,6 @@ import java.util.List;
 public class Main {
 
 
-  public static final int SIXTEE_MINUTES_IN_SECOND = 3600;
-
   public static void main(String[] args) throws Exception {
 
     testConnection();
@@ -42,6 +40,11 @@ public class Main {
       else {
         System.out.println("Slipped " + file.getName());
       }
+    }
+
+    List<Team> list = Team.findAll();
+    for (Team team : list) {
+      System.out.println(team);
     }
   }
 
@@ -90,23 +93,28 @@ public class Main {
     return true;
   }
 
-  private static void saveDataToDb(SpeleType object) {
+  private static void saveDataToDb(SpeleType speleType) {
     Game game = new Game();
 
-    String vieta = object.getVieta();
+    String vieta = speleType.getVieta();
     game.setPlace(vieta);
 
-    Date convertedDate = parseStringToDate(object.getLaiks());
+    Date convertedDate = parseStringToDate(speleType.getLaiks());
     game.setDate(convertedDate);
 
-    int spectatorsAmount = Integer.parseInt(object.getSkatitaji());
+    int spectatorsAmount = Integer.parseInt(speleType.getSkatitaji());
     game.setSpectatorsAmount(spectatorsAmount);
     Ebean.save(game);
 
-    TeamGame teamGameOne = generatePlayingTeam(object.getKomanda().get(0), game);
+    KomandaType firstKomandaType = speleType.getKomanda().get(0);
+    TeamGame teamGameOne = generatePlayingTeam(firstKomandaType, game);
     game.setTeamGameOne(teamGameOne);
-    TeamGame teamGameTwo = generatePlayingTeam(object.getKomanda().get(1), game);
+
+    KomandaType secondKomandaType = speleType.getKomanda().get(1);
+    TeamGame teamGameTwo = generatePlayingTeam(speleType.getKomanda().get(1), game);
     game.setTeamGameTwo(teamGameTwo);
+
+    processGoals(firstKomandaType, teamGameOne, secondKomandaType, teamGameTwo);
 
     calcualteTeamsPoints(teamGameOne, teamGameTwo);
 
@@ -119,16 +127,17 @@ public class Main {
     List<Goal> team2Goals = teamGameTwo.getGoals();
 
     boolean isAdditionalTime;
-    if ( team2Goals == null || (team1Goals != null && team1Goals.size() > team2Goals.size())) {
+    if (team2Goals == null || (team1Goals != null && team1Goals.size() > team2Goals.size())) {
       isAdditionalTime = hasPlayedAdditionalTime(team1Goals);
       teamGameOne.setWinners(true);
       teamGameTwo.setWinners(false);
     }
-    else if ( team1Goals == null || (team1Goals.size() < team2Goals.size())) {
+    else if (team1Goals == null || (team1Goals.size() < team2Goals.size())) {
       isAdditionalTime = hasPlayedAdditionalTime(team2Goals);
       teamGameOne.setWinners(false);
       teamGameTwo.setWinners(true);
-    }else{
+    }
+    else {
       throw new RuntimeException("Incorrect game result");
     }
     teamGameOne.setPlayedAdditionalTime(isAdditionalTime);
@@ -149,7 +158,7 @@ public class Main {
         latestGoalTimeInSeconds = goal.getGoalTimeInSeconds();
       }
     }
-    if (latestGoalTimeInSeconds > SIXTEE_MINUTES_IN_SECOND) {
+    if (latestGoalTimeInSeconds > Constants.SIXTEE_MINUTES_IN_SECOND) {
       additionalTime = true;
     }
     return additionalTime;
@@ -184,38 +193,49 @@ public class Main {
     List<Player> mainPlayers = processMainPlayers(komandaType);
     tg.setMainPlayers(mainPlayers);
 
-    List<Goal> goals = processGoals(komandaType, tg);
-    tg.setGoals(goals);
-
     Ebean.update(tg);
 
     return tg;
   }
 
-  private static List<Goal> processGoals(KomandaType komandaType, TeamGame tg) {
-    VartiType varti = komandaType.getVarti();
+  private static void processGoals(KomandaType firstKomandaType, TeamGame teamGameOne, KomandaType secondKomandaType, TeamGame teamGameTwo) {
+
+    List<Goal> goals = new ArrayList<>();
+
+    List<Goal> teamOneGoals = processTeamGoals(firstKomandaType, secondKomandaType);
+    if (teamOneGoals != null) {
+      goals.addAll(teamOneGoals);
+      teamGameOne.setGoals(teamOneGoals);
+      Ebean.update(teamGameOne);
+    }
+
+    List<Goal> teamTwoGoals = processTeamGoals(secondKomandaType, firstKomandaType);
+    if (teamTwoGoals != null) {
+      goals.addAll(teamTwoGoals);
+      teamGameTwo.setGoals(teamTwoGoals);
+      Ebean.update(teamGameTwo);
+    }
+  }
+
+  private static List<Goal> processTeamGoals(KomandaType firstKomandaType, KomandaType secondKomandaType) {
+    VartiType varti = firstKomandaType.getVarti();
     if (varti == null) {
       return null;
     }
+
+    Team scoredTeam = Team.getByName(firstKomandaType.getNosaukums());
+    Team lostTeam = Team.getByName(secondKomandaType.getNosaukums());
     List<VGType> vartuGuvumi = varti.getVG();
     List<Goal> goals = new ArrayList<>();
     for (VGType vg : vartuGuvumi) {
       int playerNumber = Integer.parseInt(vg.getNr());
-      Player goalAuthor = Player.getByNumber(playerNumber, tg.getTeam());
+      Player goalAuthor = Player.getByNumber(playerNumber, scoredTeam);
       long goalTimaInSecond = parseStringToSeconds(vg.getLaiks());
-      Goal goal = new Goal(goalAuthor, goalTimaInSecond, tg, vg.getSitiens());
+      Goal goal = new Goal(goalAuthor, goalTimaInSecond, vg.getSitiens(), scoredTeam, lostTeam);
 
       // Process player passes
-      List<PType> pTypes = vg.getP();
-      if (!pTypes.isEmpty()) {
-        List<Player> passPlayers = new ArrayList<>();
-        for (PType pt : pTypes) {
-          int passPlayerNumber1 = Integer.parseInt(pt.getNr());
-          Player passPlayer = Player.getByNumber(passPlayerNumber1, tg.getTeam());
-          passPlayers.add(passPlayer);
-        }
-        goal.setPassPlayers(passPlayers);
-      }
+      List<Player> passPlayers = processPlayerPasses(scoredTeam, vg);
+      goal.setPassPlayers(passPlayers);
 
       Ebean.save(goal);
 
@@ -223,6 +243,21 @@ public class Main {
     }
     return goals;
   }
+
+  private static List<Player> processPlayerPasses(Team team, VGType vg) {
+    List<Player> passPlayers = new ArrayList<>();
+    List<PType> pTypes = vg.getP();
+    if (!pTypes.isEmpty()) {
+
+      for (PType pt : pTypes) {
+        int passPlayerNumber1 = Integer.parseInt(pt.getNr());
+        Player passPlayer = Player.getByNumber(passPlayerNumber1, team);
+        passPlayers.add(passPlayer);
+      }
+    }
+    return passPlayers;
+  }
+
   private static long parseStringToSeconds(String time) {
     //String time = "12:32:22";
     String[] values = time.split(":");

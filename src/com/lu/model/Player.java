@@ -1,4 +1,4 @@
-package com.model;
+package com.lu.model;
 
 import com.avaje.ebean.Ebean;
 

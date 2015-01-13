@@ -1,4 +1,4 @@
-package com.model;
+package com.lu.model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -123,4 +123,5 @@ public class TeamGame {
       }
       this.points = points;
   }
+
 }
