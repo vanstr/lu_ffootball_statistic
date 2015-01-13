@@ -6,7 +6,6 @@ import com.lu.Constants;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -63,13 +62,13 @@ public class Team {
 
   public int getScoredGoals() {
     int goalsAmount = Ebean.find(Goal.class)
-        .where().in("scoredTeam", this).findRowCount();
+        .where().eq("scoredTeam", this).findRowCount();
     return goalsAmount;
   }
 
   public int getScoredGoalInMainTime() {
     int goalsAmount = Ebean.find(Goal.class)
-        .where().in("scoredTeam", this)
+        .where().eq("scoredTeam", this)
         .le("goalTimeInSeconds", Constants.SIXTEE_MINUTES_IN_SECOND)
         .findRowCount();
 
@@ -78,7 +77,7 @@ public class Team {
 
   public int getLostGoalInMainTime() {
     int goalsAmount = Ebean.find(Goal.class)
-        .where().in("lostTeam", this)
+        .where().eq("lostTeam", this)
         .le("goalTimeInSeconds", Constants.SIXTEE_MINUTES_IN_SECOND)
         .findRowCount();
     return goalsAmount;
@@ -86,24 +85,23 @@ public class Team {
 
   public int getLostGoals() {
     int goalsAmount = Ebean.find(Goal.class)
-        .where().in("lostTeam", this).findRowCount();
+        .where().eq("lostTeam", this).findRowCount();
 
     return goalsAmount;
   }
 
-  private List<TeamGame> getTeamGamesWithOponent() {
-    List<TeamGame> teamGames = getTeamGames();
-    List<Game> res1 = Ebean.find(Game.class).where().in("teamGameOne", teamGames).findList();
-    List<Game> res2 = Ebean.find(Game.class).where().in("teamGameTwo", teamGames).findList();
+  public int getWonTeamGamesAmount() {
+    int amount = Ebean.find(TeamGame.class)
+        .where().eq("team", this).eq("winners", true).findRowCount();
 
-    List<TeamGame> oponentTeamGames = new ArrayList<>();
-    for (Game g : res2) {
-      oponentTeamGames.add(g.getTeamGameOne());
-    }
-    for (Game g : res1) {
-      oponentTeamGames.add(g.getTeamGameTwo());
-    }
-    return oponentTeamGames;
+    return amount;
+  }
+
+  public int getLostTeamGamesAmount() {
+    int amount = Ebean.find(TeamGame.class)
+        .where().eq("team", this).eq("winners", false).findRowCount();
+
+    return amount;
   }
 
   @Override
@@ -112,6 +110,8 @@ public class Team {
         "id=" + id +
         ", name=" + name +
         ", points=" + getPoints() +
+        ", win=" + getWonTeamGamesAmount() +
+        ", loose=" + getLostTeamGamesAmount() +
         ", TotalScoredGoals=" + getScoredGoals() +
         ", TotalLostGoals=" + getLostGoals() +
         ", ScoredGoalsInMainTime=" + getScoredGoalInMainTime() +
