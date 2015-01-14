@@ -4,7 +4,11 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.SqlRow;
 import com.lu.model.*;
 import com.lu.schema.*;
+import com.lu.structure.Statistic;
+import com.lu.structure.TeamTop;
+import dnl.utils.text.table.TextTable;
 
+import javax.swing.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -28,7 +32,6 @@ public class Main {
 
     testConnection();
 
-    //File footballDataFolder = new File("resources/data");
     File footballDataFolder = new File("C:\\Users\\imi\\IdeaProjects\\trash\\lu_ffootball_statistic\\resources\\data");
     List<File> files = getXmlFilesInFolder(footballDataFolder);
     for (File file : files) {
@@ -42,10 +45,16 @@ public class Main {
       }
     }
 
-    List<Team> list = Team.findAll();
-    for (Team team : list) {
-      System.out.println(team);
-    }
+
+    Statistic teamTop = new TeamTop();
+    TextTable tt = new TextTable(teamTop.getColumns(), teamTop.getData());
+    // this adds the numbering on the left
+    tt.setAddRowNumbering(true);
+    // sort by the first column
+    tt.setSort(2, SortOrder.DESCENDING);
+
+    tt.printTable();
+
   }
 
 
