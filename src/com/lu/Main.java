@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.SqlRow;
 import com.lu.model.*;
 import com.lu.schema.*;
+import com.lu.structure.PlayerTop;
 import com.lu.structure.Statistic;
 import com.lu.structure.TeamTop;
 import dnl.utils.text.table.TextTable;
@@ -52,8 +53,15 @@ public class Main {
     tt.setAddRowNumbering(true);
     // sort by the first column
     tt.setSort(2, SortOrder.DESCENDING);
-
     tt.printTable();
+
+    Statistic playerTop = new PlayerTop();
+    TextTable playerTopTable = new TextTable(playerTop.getColumns(), playerTop.getData());
+    // this adds the numbering on the left
+    playerTopTable.setAddRowNumbering(true);
+    // sort by the first column
+    //playerTopTable.setSort(3, SortOrder.DESCENDING);
+    playerTopTable.printTable();
 
   }
 
@@ -116,11 +124,11 @@ public class Main {
     Ebean.save(game);
 
     KomandaType firstKomandaType = speleType.getKomanda().get(0);
-    TeamGame teamGameOne = generatePlayingTeam(firstKomandaType, game);
+    TeamGame teamGameOne = processTeamGame(firstKomandaType, game);
     game.setTeamGameOne(teamGameOne);
 
     KomandaType secondKomandaType = speleType.getKomanda().get(1);
-    TeamGame teamGameTwo = generatePlayingTeam(speleType.getKomanda().get(1), game);
+    TeamGame teamGameTwo = processTeamGame(speleType.getKomanda().get(1), game);
     game.setTeamGameTwo(teamGameTwo);
 
     processGoals(firstKomandaType, teamGameOne, secondKomandaType, teamGameTwo);
@@ -186,7 +194,7 @@ public class Main {
     return res;
   }
 
-  private static TeamGame generatePlayingTeam(KomandaType komandaType, Game game) {
+  private static TeamGame processTeamGame(KomandaType komandaType, Game game) {
     TeamGame tg = new TeamGame();
 
     tg.setGame(game);
@@ -260,6 +268,7 @@ public class Main {
 
       for (PType pt : pTypes) {
         int passPlayerNumber1 = Integer.parseInt(pt.getNr());
+        System.out.println("player pass : " + passPlayerNumber1);
         Player passPlayer = Player.getByNumber(passPlayerNumber1, team);
         passPlayers.add(passPlayer);
       }

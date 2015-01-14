@@ -19,7 +19,8 @@ public class Goal {
   private Team lostTeam;
   @ManyToOne
   private Player goalAuthor;
-  @ManyToMany
+
+  @ManyToMany(mappedBy = "gavePass", cascade = CascadeType.ALL)
   @JoinTable(name = "GOAL_PASS_PLAYER",
       joinColumns = @JoinColumn(name = "player_id"),
       inverseJoinColumns = @JoinColumn(name = "goal_id"))

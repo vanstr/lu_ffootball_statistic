@@ -9,7 +9,8 @@ import java.util.List;
 @Table(name = "PLAYER",
     uniqueConstraints = @UniqueConstraint(columnNames = "TEAM_ID, NUMBER")
 )
-public class Player {
+public class Player implements Comparable<Player> {
+
   @Id
   private int id;
 
@@ -23,19 +24,20 @@ public class Player {
   @OneToMany
   private List<Goal> goals;
 
-  @ManyToMany(mappedBy = "passPlayers", cascade = CascadeType.ALL)
+  @ManyToMany
   private List<Goal> gavePass;
 
   @ManyToMany(mappedBy = "enrolledPlayers", cascade = CascadeType.ALL)
   private List<TeamGame> teamGamesAsEnrolledPlayer;
 
-  @ManyToMany(mappedBy = "mainPlayers",  cascade = CascadeType.ALL)
+  @ManyToMany(mappedBy = "mainPlayers", cascade = CascadeType.ALL)
   private List<TeamGame> teamGamesAsMainPlayer;
 
-  public Player(){
+  public Player() {
 
   }
-  public Player( Team team, int nr, String vards, String uzvards, String loma) {
+
+  public Player(Team team, int nr, String vards, String uzvards, String loma) {
     setTeam(team);
     setNumber(nr);
     setLastName(uzvards);
@@ -112,7 +114,7 @@ public class Player {
   }
 
   public List<Goal> getGoals() {
-    return goals;
+    return Ebean.find(Goal.class).where().eq("goalAuthor", this).findList();
   }
 
   public void setGoals(List<Goal> goals) {
@@ -125,5 +127,39 @@ public class Player {
 
   public void setGavePass(List<Goal> gavePass) {
     this.gavePass = gavePass;
+  }
+
+  public static List<Player> findAll() {
+    return Ebean.find(Player.class).findList();
+  }
+
+
+  public int getGoalAmount() {
+    List<Goal> goals1 = getGoals();
+    if (goals1 == null) {
+      return 0;
+    }
+    else {
+      return goals1.size();
+    }
+  }
+
+  public int getPassAmount() {
+    List<Goal> passes1 = getGavePass();
+    if (passes1 == null) {
+      return 0;
+    }
+    else {
+      return passes1.size();
+    }
+  }
+
+  @Override
+  public int compareTo(Player o) {
+    int res = o.getGoalAmount() - this.getGoalAmount();
+    if(res == 0){
+      res = o.getPassAmount() - this.getPassAmount();
+    }
+    return res;
   }
 }
